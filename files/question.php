@@ -48,9 +48,13 @@ EOF;
   <input type="submit" name="submit" value="Submit">  
 </form>
 
+<p id="demo"></p><br>
+
+<p> <a href=main.php>Mainpage</a> </p>
+
 <script>
 var initime = new Date().getTime();
-var fivemin = initime + 5000;
+var fivesec = initime + 5000;
 // Update the count down every 1 second
 var x = setInterval(function() {
 
@@ -58,7 +62,7 @@ var x = setInterval(function() {
     var now = new Date().getTime();
 	    
     // Find the distance between now an the count down date
-    var distance = fivemin - now;
+    var distance = fivesec - now;
     
     // Time calculations for days, hours, minutes and seconds
     var days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -67,14 +71,14 @@ var x = setInterval(function() {
     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
     
     // Output the result in an element with id="demo"
-    //document.getElementById("demo").innerHTML = days + "d " + hours + "h "
-    //+ minutes + "m " + seconds + "s ";
+    document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+    + minutes + "m " + seconds + "s ";
 	document.getElementById("duration").value = seconds;
     
     // If the count down is over, write some text 
     if (distance < 0) {
         clearInterval(x);
-        document.getElementById("demo").innerHTML = "EXPIRED";
+        document.getElementById("demo").innerHTML = "TIME UP";
     }
 }, 1000);
 </script>

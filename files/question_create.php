@@ -10,7 +10,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (empty($_POST["question"])) {
     $question = "Question is required";
   } else {
-    $question = $_POST["question"];
+	$page = $_POST["question"];
+    $question = "http://localhost:8000/$page";
   }
   if (empty($_POST["answer"])) {
     $answer = "answer is required";
@@ -51,27 +52,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    if(!$ret) {
       echo $db->lastErrorMsg();
    } else {
-      echo "Records created successfully\n";
+      echo "Records added successfully\n";
    }
    $db->close();
 }
   
 ?>
 
-
+<p> Input relative question page. eg. question1.php. </p>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-  Question: <input type="text" name="question" value="<?php echo $question;?>">
+  Question: <input type="text" name="question" value="">
   <span class="error">* <?php echo $question;?></span>
   <br><br>
-  Answer: <input type="text" name="answer" value="<?php echo $answer;?>">
+  Answer: <input type="text" name="answer" value="">
   <span class="error">* <?php echo $answer;?></span>
   <br><br>
-  Category: <input type="text" name="category" value="<?php echo $category;?>">
+  Category: <input type="text" name="category" value="">
   <span class="error">* <?php echo $category;?></span>
   <br><br>
   <input type="submit" name="submit" value="Submit">  
 </form>
 
+<p> <a href=main.php>Mainpage</a> </p>
 
 <script>
 

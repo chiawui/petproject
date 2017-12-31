@@ -1,1 +1,2 @@
-php -S localhost:8000
+cd files
+..\php -S localhost:8000

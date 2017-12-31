@@ -13,7 +13,7 @@
    if(!$db) {
       echo $db->lastErrorMsg();
    } else {
-      echo "Opened database successfully<br>";
+      echo "Debug: Opened database successfully<br>";
    }
    
    
@@ -32,16 +32,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
   $duration = $_POST["duration"];
   $questionid = $_POST["questionid"];
-  echo $duration;
-  $sql = "INSERT INTO QUESTION (QUESTION,ANSWER,TIME)\nVALUES ( \"$questionid\" , \"$answer\" , \"$duration\" );";
+  //echo $duration;
+  $sql = "INSERT INTO STUDENT (QUESTION_ID,ANSWER,TIME)\nVALUES ( \"$questionid\" , \"$answer\" , \"$duration\" );";
 
-   echo $sql;
-   $db->close();
+  $ret = $db->exec($sql);
+	if(!$ret){
+	   echo $db->lastErrorMsg();
+	} else {
+	   echo "Answer inserted successfully\n<br>";
+	}
+	
 }
+
+//Query all inserted answer
+   $sql =<<<EOF
+      SELECT * from STUDENT;
+EOF;
+
+   $ret = $db->query($sql);
+   while($row = $ret->fetchArray(SQLITE3_ASSOC) ) {
+      echo "". $row['ID'] . ".\n";
+      echo "QUESTION_ID = ". $row['QUESTION_ID'] ."\n";
+      echo "ANSWER = ". $row['ANSWER'] ." | ";
+      echo "TIME = ".$row['TIME'] ." <br> ";
+   }
+   //echo "Operation done successfully\n";
+   $db->close();
 
 ?>
 
-
+<p> <a href=main.php>Mainpage</a> </p>
 
 
 </body>
