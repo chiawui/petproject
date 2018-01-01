@@ -1,3 +1,8 @@
+<?php
+// Start the session
+session_start();
+?>
+
 <!DOCTYPE html>
 <html>
 <body>
@@ -9,7 +14,28 @@ if ($_GET) {
     $arg = $argv[1];
 }
 
-//echo $arg;
+//Set session username
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+  if (!empty($_POST["usrname"])) {
+	// Set session variables
+	$_SESSION["usrname"] = $_POST["usrname"];
+  }
+  
+}
+
+//Redirect to login page if session not started
+	if(count($_SESSION)==0){
+		header("Location: /session.php?arg=$arg");
+	}
+	else if($_SESSION["usrname"]=="")
+	{
+		echo "Session not started";
+	}else{
+	$usrname = $_SESSION["usrname"];
+	echo "Session has started $usrname <br>";
+	}
+
 
    class MyDB extends SQLite3 {
       function __construct() {
@@ -49,6 +75,8 @@ EOF;
 </form>
 
 <p id="demo"></p><br>
+
+<p><a href=session_end.php>Logout</a> </p>
 
 <p> <a href=main.php>Mainpage</a> </p>
 
