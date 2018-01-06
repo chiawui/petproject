@@ -16,42 +16,44 @@
    }
    
    // Query list of category
-   $sql = "SELECT DISTINCT CATEGORY FROM QUESTION";
-   
-   $ret = $db->query($sql);
+   $stmt = $db->prepare("SELECT DISTINCT CATEGORY FROM QUESTION");
+   $ret = $stmt->execute();
+   // List out category if available
    echo "CATEGORY FILTER= ";
    while($row = $ret->fetchArray(SQLITE3_ASSOC) ) {
       $category = $row['CATEGORY'];
-      echo "<a href=\"http://localhost:8000/viewdb.php?arg=cat&filter=$category\"> $category</a> | ";
+      echo "<a href=\"http://localhost:8000/viewdb.php?catfilter=$category\"> $category</a> | ";
    }
    echo "<br><br>";
-   
+      
    //check argument
-   if (isset($_GET["arg"])) {
-		if($_GET["arg"]=="del"){
-		   $id = $_GET["id"];
-		   $sql ="DELETE FROM QUESTION WHERE ID = $id";
+   if (isset($_GET["catfilter"])) {
+		$filter = $_GET["catfilter"];
+		// Query list of all question filtered by category'
+		$stmt = $db->prepare("SELECT * from QUESTION WHERE CATEGORY = (:category)");
+		$stmt->bindParam(':category', $filter);
+		$sql = "SELECT * from QUESTION WHERE CATEGORY = \"$filter\"";
+	}
+	else if(isset($_GET["deleteid"])){
+		$id = $_GET["deleteid"];
+		// Delete entry of deleteid from database
+		$stmt = $db->prepare("DELETE FROM QUESTION WHERE ID = (:id)");
+		$stmt->bindParam(':id', $id);
 		   
-		   $ret = $db->exec($sql);
-			if(!$ret){
-			   echo $db->lastErrorMsg();
-			} else {
-			   echo "Deleted successfully\n";
-			}
-		}
-		else if($_GET["arg"]=="cat"){
-			$filter = $_GET["filter"];
-			// Query list of all question filtered by category
-			$sql = "SELECT * from QUESTION WHERE CATEGORY = \"$filter\"";
+		$ret = $stmt->execute();
+		if(!$ret){
+		   echo $db->lastErrorMsg();
+		} else {
+		   echo "Deleted successfully\n";
 		}
 	}
 	else{
-		$sql = "SELECT * from QUESTION";
+		//Query list of all questions
+		$stmt = $db->prepare("SELECT * from QUESTION");
 	}
       
-   
-
-   $ret = $db->query($sql);
+   $ret = $ret = $stmt->execute();
+   //Print out list of all questions
    $id =0;
    while($row = $ret->fetchArray(SQLITE3_ASSOC) ) {
       $id++;
@@ -61,7 +63,7 @@
       echo "CATEGORY = ".$row['CATEGORY'] ." | ";
 	  $questionid = $row['ID'];
 	  echo "<a href=\"http://localhost:8000/question.php?arg=$questionid\"> Link to question $questionid</a> | ";
-	  echo "<a href=\"http://localhost:8000/viewdb.php?arg=del&id=$questionid\"> Delete $questionid</a><br>";
+	  echo "<a href=\"http://localhost:8000/viewdb.php?deleteid=$questionid\"> Delete $questionid</a><br>";
    }
    //echo "Operation done successfully\n";
    $db->close();

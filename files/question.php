@@ -8,6 +8,7 @@ session_start();
 <body>
 <?php
 
+//TODO: check for missing arguments
 if ($_GET) {
     $arg = $_GET['arg'];
 } else {
@@ -32,8 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	{
 		echo "Session not started";
 	}else{
-	$usrname = $_SESSION["usrname"];
-	echo "Session has started $usrname <br>";
+		$usrname = $_SESSION["usrname"];
+		echo "Session has started $usrname <br>";
 	}
 
 
@@ -49,16 +50,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       echo "Opened database successfully<br>";
    }
    
-   $sql =<<<EOF
-      SELECT QUESTION from QUESTION WHERE ID= $arg;
-EOF;
-   $ret = $db->query($sql);
+	$stmt = $db->prepare("SELECT QUESTION from QUESTION WHERE ID= (:id)");
+	$stmt->bindParam(':id', $arg);
+	$ret = $stmt->execute();
+	
    $row = $ret->fetchArray(SQLITE3_ASSOC);
    $question = $row['QUESTION'];
    
-   $answer = "";
-
-
 ?>
 <iframe src="<?php echo $question; ?>"
         width="100%" height="500" frameborder="0"
@@ -66,8 +64,8 @@ EOF;
 </iframe>
 
 <form method="post" action="answer.php">  
-  Answer: <input type="text" name="answer" value="<?php echo $answer;?>">
-  <span class="error">* <?php echo $answer;?></span>
+  Answer: <input type="text" name="answer" value="">
+  <span class="error">* </span>
   <br><br>
   <input type="hidden" id="questionid" name="questionid" value="<?php echo $arg; ?>">
   <input type="hidden" id="duration" name="duration" value="">
