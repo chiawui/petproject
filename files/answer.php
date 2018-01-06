@@ -1,3 +1,8 @@
+<?php
+// Start the session
+session_start();
+?>
+
 <!DOCTYPE html>
 <html>
 <body>
@@ -32,8 +37,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
   $duration = $_POST["duration"];
   $questionid = $_POST["questionid"];
+  $usrname = $_SESSION["usrname"];
   //echo $duration;
-  $sql = "INSERT INTO STUDENT (QUESTION_ID,ANSWER,TIME)\nVALUES ( \"$questionid\" , \"$answer\" , \"$duration\" );";
+  $sql = "INSERT INTO $usrname (QUESTION_ID,ANSWER,TIME)\nVALUES ( \"$questionid\" , \"$answer\" , \"$duration\" );";
 
   $ret = $db->exec($sql);
 	if(!$ret){
@@ -46,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 //Query all inserted answer
    $sql =<<<EOF
-      SELECT * from STUDENT;
+      SELECT * from $usrname;
 EOF;
 
    $ret = $db->query($sql);
@@ -60,6 +66,8 @@ EOF;
    $db->close();
 
 ?>
+
+<p> <a href=viewdb.php>View questions</a> </p>
 
 <p> <a href=main.php>Mainpage</a> </p>
 

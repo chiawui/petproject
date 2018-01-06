@@ -7,6 +7,28 @@ session_start();
 <body>
 <?php
 
+	class MyDB extends SQLite3 {
+      function __construct() {
+         $this->open('test.db');
+      }
+   }
+   $db = new MyDB();
+   if(!$db) {
+      echo $db->lastErrorMsg();
+   } else {
+      echo "Debug: Opened database successfully<br>";
+   }
+   
+   $usrname = $_SESSION["usrname"];
+   $sql = "DROP TABLE $usrname";
+   
+	$ret = $db->exec($sql);
+	if(!$ret){
+	   echo $db->lastErrorMsg();
+	} else {
+	   echo "Table deleted successfully\n";
+	}
+
 // remove all session variables
 session_unset(); 
 

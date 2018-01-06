@@ -25,19 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   
 }
 
-//Redirect to login page if session not started
-	if(count($_SESSION)==0){
-		header("Location: /session.php?arg=$arg");
-	}
-	else if($_SESSION["usrname"]=="")
-	{
-		echo "Session not started";
-	}else{
-		$usrname = $_SESSION["usrname"];
-		echo "Session has started $usrname <br>";
-	}
-
-
    class MyDB extends SQLite3 {
       function __construct() {
          $this->open('test.db');
@@ -49,6 +36,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    } else {
       echo "Opened database successfully<br>";
    }
+
+//Redirect to login page if session not started
+	if(count($_SESSION)==0){
+		header("Location: /session.php?arg=$arg");
+	}
+	else if($_SESSION["usrname"]=="")
+	{
+		echo "Session not started";
+	}else{
+		$usrname = $_SESSION["usrname"];
+		echo "Session has started $usrname <br>";
+		$sql = "CREATE TABLE IF NOT EXISTS $usrname(ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+		QUESTION_ID INT NOT NULL, 
+		ANSWER TEXT NOT NULL,  
+		TIME INT NOT NULL)";
+		
+		$ret = $db->exec($sql);
+		if(!$ret){
+		   echo $db->lastErrorMsg();
+		} else {
+		   echo "Table created successfully\n";
+		}
+	}
+
    
 	$stmt = $db->prepare("SELECT QUESTION from QUESTION WHERE ID= (:id)");
 	$stmt->bindParam(':id', $arg);
